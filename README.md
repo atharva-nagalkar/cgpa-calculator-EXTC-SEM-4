@@ -8,6 +8,8 @@
 [![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
 [![Build](https://img.shields.io/badge/build-passing-22c55e)](#installation)
 
+**Live Demo:** https://cgpa-calculator-extc.netlify.app/
+
 ---
 
 ## Project Overview
