@@ -9,7 +9,8 @@ export const createEmptyMarks = () =>
   );
 
 export const getGradeInfo = (percentage) => {
-  const match = gradeScale.find((entry) => percentage >= entry.min && percentage <= entry.max);
+  const normalizedPercentage = Math.floor(percentage);
+  const match = gradeScale.find((entry) => normalizedPercentage >= entry.min && normalizedPercentage <= entry.max);
   return match ?? gradeScale[gradeScale.length - 1];
 };
 

@@ -40,6 +40,33 @@ describe('SGPA calculations', () => {
     expect(result.totalEarnedGradePoints).toBe(230);
   });
 
+  it('maps every SES TW and oral combination to the correct grade', () => {
+    const expectedGradeFromPercentage = (percentage) => {
+      if (percentage >= 90) return { grade: 'O', point: 10 };
+      if (percentage >= 80) return { grade: 'A+', point: 9 };
+      if (percentage >= 70) return { grade: 'A', point: 8 };
+      if (percentage >= 60) return { grade: 'B+', point: 7 };
+      if (percentage >= 55) return { grade: 'B', point: 6 };
+      if (percentage >= 50) return { grade: 'C', point: 5 };
+      if (percentage >= 40) return { grade: 'P', point: 4 };
+      return { grade: 'F', point: 0 };
+    };
+
+    for (let tw = 20; tw <= 50; tw += 1) {
+      for (let oral = 10; oral <= 25; oral += 1) {
+        const result = calculateResults({ ses: { tw: String(tw), oral: String(oral) } });
+        const sesResult = result.subjectResults.find(({ subject }) => subject.id === 'ses').result;
+        const expectedPercentage = ((tw + oral) / 75) * 100;
+        const expected = expectedGradeFromPercentage(Math.floor(expectedPercentage));
+
+        expect(sesResult.total).toBe(tw + oral);
+        expect(sesResult.percentage).toBeCloseTo(expectedPercentage, 10);
+        expect(sesResult.grade).toBe(expected.grade);
+        expect(sesResult.gradePoint).toBe(expected.point);
+      }
+    }
+  });
+
   it('builds a subject-wise breakdown from the existing calculation results', () => {
     const marks = {
       'adc-theory': { theory: '36', internal: '28' },
@@ -103,6 +130,6 @@ describe('quick paste parser', () => {
 describe('app smoke test', () => {
   it('renders the main dashboard', () => {
     render(<App />);
-    expect(screen.getByText(/Mumbai University SGPA Calculator/i)).toBeInTheDocument();
+    expect(screen.getByRole('heading', { name: /Mumbai University SGPA Calculator/i })).toBeInTheDocument();
   });
 });
